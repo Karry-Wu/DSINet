@@ -26,6 +26,6 @@ Your `/datasets` folder should look like this:
 ````
 
 ## Training and Testing
-1. Download the pretrained backbone weights and put it into `backboneweight/` folder. [HRNet] (https://pan.baidu.com/s/1DRPvNPr9QPuJJccNf_uJIw)[baidu:h436]  [SwinTransformer](https://github.com/microsoft/Swin-Transformer) . 
+1. Download the pretrained backbone weights and put it into `backboneweight/` folder. [HRNet](https://pan.baidu.com/s/1DRPvNPr9QPuJJccNf_uJIw)[baidu:h436]  [SwinTransformer](https://github.com/microsoft/Swin-Transformer) . 
 
 2. Run `python train.py ` for training and testing. The prediction saliency maps and evaluation results will be in `predresult/` folder and the training records and model weights will be in `ckpt/` folder. 
