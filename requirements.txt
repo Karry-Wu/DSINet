@@ -1,0 +1,14 @@
+CUDA 11.3
+python==3.8.19
+pytorch==1.12.1
+torchvision==0.13.1
+torchaudio==0.12.1
+pip install tensorboardX==2.6.2.2
+tqdm==4.66.4
+timm==0.9.16
+matplotlib==3.7.5
+opencv-python==4.9.0.80
+scikit-image==0.21.0
+pyyaml==6.0.1
+nvidia-apex==22.03
+numpy==1.24.4
