@@ -106,67 +106,7 @@ def main():
     train(net, optimizer)
     writer.close()
 
-def train(net, optimizer):
-    curr_iter = 1
-    start_time = time.time()
 
-    for epoch in range(args['last_epoch'] + 1, args['last_epoch'] + 1 + args['epoch_num']):
-
-        model_dir=os.path.join(ckpt_path,exp_name,str(epoch) + '.pth')
-        loss_record, loss_1_record = AvgMeter(), AvgMeter()
-
-        train_iterator = tqdm(train_loader, total=len(train_loader))
-        for data in train_iterator:
-            if args['poly_train']:
-                base_lr = args['lr'] * (1 - float(curr_iter) / float(total_epoch)) ** args['lr_decay']
-                optimizer.param_groups[0]['lr'] = 2 * base_lr
-                optimizer.param_groups[1]['lr'] = 1 * base_lr
-
-            inputs, labels = data
-            batch_size = inputs.size(0)
-            inputs = Variable(inputs).cuda()
-            labels = Variable(labels).cuda()
-
-            optimizer.zero_grad()
-            predict = net(inputs)  #[out,d1,d2,d3]
-
-            loss_1 = structure_loss(predict[0], labels)
-            loss_2 = structure_loss(predict[1], labels)
-            loss_3 = structure_loss(predict[2], labels)
-            loss_4 = structure_loss(predict[3], labels)
-            loss = loss_1 + loss_2 * 0.8 + loss_3 * 0.8 + loss_4 * 0.8
-
-            loss.backward()
-            optimizer.step()
-            loss_record.update(loss.data, batch_size)
-            loss_1_record.update(loss_1.data, batch_size)
-
-            if curr_iter % 10 == 0:
-                writer.add_scalar('loss', loss, curr_iter)
-                writer.add_scalar('loss_1', loss_1, curr_iter)
-
-            log = '[epoch%3d,cur_iter%6d,baselr%.6f,loss=%.5f,loss1=%.5f]' % \
-                  (epoch, curr_iter, base_lr, loss_record.avg, loss_1_record.avg)
-
-            train_iterator.set_description(log)
-            if curr_iter % 100 ==0 or curr_iter%len(train_loader)==0:
-                open(log_path, 'a').write(log + '\n')
-
-            curr_iter += 1
-
-        if epoch % args['save_point'] == 0:
-            net.cpu()
-            torch.save(net.state_dict(), os.path.join(ckpt_path, exp_name, '%d.pth' % epoch))
-            main_infer(model_dir=model_dir)
-            net.cuda()
-
-        if epoch >= args['epoch_num']:
-            net.cpu()
-            torch.save(net.state_dict(), os.path.join(ckpt_path, exp_name, '%d.pth' % epoch))
-            print("Total Training Time: {}".format(str(datetime.timedelta(seconds=int(time.time() - start_time)))))
-            open(log_path, 'a').write(str(datetime.datetime.now()) + '\n'+"Total Training Time: {}".format(str(datetime.timedelta(seconds=int(time.time() - start_time)))))
-            print(exp_name,"Optimization Have Done!")
-            return
 
 
 if __name__ == '__main__':
